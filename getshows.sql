@@ -1,1 +1,1 @@
-SELECT * FROM [dbo].[BANDS]
+SELECT * FROM [dbo].[SHOWS_VW]

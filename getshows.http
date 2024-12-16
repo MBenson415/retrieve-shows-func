@@ -1,1 +1,5 @@
-GET http://localhost:7071/api/bands
+//Local
+//GET http://localhost:7071/api/bands
+
+//Prod
+GET https://retrieve-shows-api.azurewebsites.net/api/bands?code=JhOEB42R4P8riOzIsBDxQdNynGp0yMBeIEWIXZsWdSQ7AzFu0p4zBw%3D%3D
