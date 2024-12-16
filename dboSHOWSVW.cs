@@ -4,6 +4,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Azure.Functions.Worker.Extensions.Sql;
 using Microsoft.Extensions.Logging;
+using Google.Protobuf.WellKnownTypes;
+using MoreLinq;
 
 namespace MarshallBensonMusic.Shows
 {
@@ -23,6 +25,7 @@ namespace MarshallBensonMusic.Shows
             "SqlConnectionString")] IEnumerable<ShowItem> showItems)
         {
             _logger.LogInformation("C# HTTP trigger with SQL Input Binding function processed a request.");
+            _logger.LogInformation(showItems.ToString(",", ));
 
             return showItems;
         }

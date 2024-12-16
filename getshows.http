@@ -1,5 +1,6 @@
 //Local
-//GET http://localhost:7071/api/bands
+GET http://localhost:7071/api/dboSHOWSVW/
+Content-Type: application/json
 
 //Prod
-GET https://retrieve-shows-api.azurewebsites.net/api/bands?code=JhOEB42R4P8riOzIsBDxQdNynGp0yMBeIEWIXZsWdSQ7AzFu0p4zBw%3D%3D
+//GET https://retrieve-shows-api.azurewebsites.net/api/dboSHOWSVW?code=CKOkkqeUupOwOU-BkV4x5bIVDdG93kNzsxbCTRVpskYbAzFumMZhKw%3D%3D/
