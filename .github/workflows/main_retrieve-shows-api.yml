@@ -2,7 +2,10 @@
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
 permissions:
+  actions: read
   contents: read
+  pages: write
+  id-token: write
 
 name: Build and deploy dotnet core app to Azure Function App - retrieve-shows-api
 
