@@ -1,5 +1,9 @@
 //Local
-GET http://localhost:7071/api/dboSHOWSVW/
+//GET http://localhost:7071/api/dboSHOWSVW/
+//Content-Type: application/json
+
+//Local V2
+GET http://localhost:7071/api/dboSHOWSVWIActionResult
 Content-Type: application/json
 
 //Prod
