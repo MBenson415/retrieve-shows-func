@@ -264,5 +264,4 @@ __pycache__/
 *.pyc
 
 # Developer testing files
-*.http
 .sql
