@@ -5,6 +5,7 @@
       .then(response => response.json())
       .then(events => {
 
+
         const eventsList = document.getElementById('events-list');
 
         var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
@@ -19,6 +20,7 @@
           const formattedDate = dateTime.toLocaleDateString("en-US", options);
 
           //to do: add facebook and ticket icons before links, hide if null
+
           eventItem.innerHTML = `
             <div class="event-container">
               <div class="event-info">
@@ -28,9 +30,18 @@
                 ${event.street}<br>
                   ${event.city}, ${event.state} ${event.zip}<br>
                   ${event.country}</p>
-                <a href="${event.facebooK_LINK}" target="_blank">Facebook Event Link</a>
-                <a href="${event.tickeT_LINK}" target="_blank">Ticket Link</a>
-                <a href="${event.promo}" target="_blank">Flyer</a>
+                <div class="facebook-link">
+                    <img src="https://squarespacemusic.blob.core.windows.net/$web/facebook_icon.png" alt="${event.facebooK_LINK}" class="icon-img">
+                    <a href="${event.facebooK_LINK}" target="_blank">Facebook Event Link</a>
+                </div>
+                <div class="ticket-link">
+                  <img src="https://squarespacemusic.blob.core.windows.net/$web/ticket.png" alt="${event.tickeT_LINK}" class="icon-img">
+                  <a href="${event.tickeT_LINK}" target="_blank">Ticket Link</a>
+                </div>
+                <div class="flyer-img">
+                  <img src="${event.promo}" alt="${event.promo}" class="icon-img">
+                  <a href="${event.promo}" target="_blank">Flyer</a>
+                </div>
               </div>
               <div class="event-image">
                 <img src="${event.banD_IMAGE}" alt="Artist Image" class="event-img">
@@ -40,45 +51,44 @@
             </div>
           `;
 
-          eventsList.appendChild(eventItem);
+        eventsList.appendChild(eventItem);
 
-          // Initialize map for each event
-          const mapAddress = event.address;
+        // Initialize map for each event
+        const mapAddress = event.address;
 
-          const mapContainer = document.getElementById(`map-${event.id}`);
+        const mapContainer = document.getElementById(`map-${event.id}`);
 
-          const geocoder = new google.maps.Geocoder();
-          geocoder.geocode({ 'address': mapAddress }, function (results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-              var mapOptions = {
-                zoom: 16,
-                center: results[0].geometry.location,
-                disableDefaultUI: true
-              };
-              var map = new google.maps.Map(document.getElementById(`map-${event.id}`), mapOptions);
-              var marker = new google.maps.Marker({
-                map: map,
-                position: results[0].geometry.location
-              });
-              // Add click listener to marker
-              marker.addListener('click', function () {
-                const confirmNavigation = confirm('Would you like to navigate to this event location?');
-                if (confirmNavigation) {
-                  window.open(event.googlE_MAPS_LINK, '_blank');
-                }
-              });
+        const geocoder = new google.maps.Geocoder();
+        geocoder.geocode({ 'address': mapAddress }, function (results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            var mapOptions = {
+              zoom: 16,
+              center: results[0].geometry.location,
+              disableDefaultUI: true
+            };
+            var map = new google.maps.Map(document.getElementById(`map-${event.id}`), mapOptions);
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+            // Add click listener to marker
+            marker.addListener('click', function () {
+              const confirmNavigation = confirm('Would you like to navigate to this event location?');
+              if (confirmNavigation) {
+                window.open(event.googlE_MAPS_LINK, '_blank');
+              }
+            });
 
-            } else {
-              Console.error("Geocode was not successful for the following reason: " + status);
-            }
-          });
-
+          } else {
+            Console.error("Geocode was not successful for the following reason: " + status);
+          }
         });
-      })
-      .catch(error => console.error('Error:', error));
+
+      });
+  })
+    .catch(error => console.error('Error:', error));
   });
 </script>
-
 
 
 <style>
@@ -91,6 +101,8 @@
       opacity: 1;
     }
   }
+  
+
 
   #events-list {
     list-style-type: none;
@@ -145,13 +157,21 @@
     text-decoration: none;
   }
 
+  a[href="null"]{
+  display: none;
+}
+
+  img[alt="null"]{
+  display: none;
+}
+
   .event-item a:hover {
     text-decoration: underline;
     color: #ADD8E6;
   }
 
   .event-item:hover {
-    transform: scale(1.05);   
+    transform: scale(1.05);
   }
 
   .event-image {
@@ -175,6 +195,14 @@
     margin-top: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .icon-img {
+    float: left;
+    align-items: center;
+    margin: 10px;
+    width: 25px;
+    height: 25px;
   }
 
   @media (max-width: 500px) {
