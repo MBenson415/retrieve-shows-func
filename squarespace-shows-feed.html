@@ -1,34 +1,36 @@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAjnGzSGqb4dvp_TIibpoTXjcNcChmoJXI"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1f5M4esX6NqhJcrZ5AtZ1dHzzG-6vBSg"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     fetch('https://retrieve-shows-api.azurewebsites.net/api/Shows?code=XDNFwepNic7h2MsxHAmGOOMTNw64DmdtO8taNND7FXTyAzFuJNgr-Q%3D%3D')
       .then(response => response.json())
       .then(events => {
+
         const eventsList = document.getElementById('events-list');
-        const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' };
 
         console.log(events);
         events.forEach(event => {
           const eventItem = document.createElement('div');
           eventItem.classList.add('event-item');
-          
+
           const dateTime = new Date(event.date);
-          //"Wednesday, December 25 2024"
+
           const formattedDate = dateTime.toLocaleDateString("en-US", options);
 
-          const googleMapsLink = 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwipxcTVlMSKAxULOTQIHaJ5IQ8Q8gF6BAggEAI&url=%2Fmaps%2Fplace%2F1213%2BGreen%2BForest%2BDr%2C%2BAustin%2B%2C%2BTX'
-
+          //to do: add facebook and ticket icons before links, hide if null
           eventItem.innerHTML = `
             <div class="event-container">
               <div class="event-info">
                 <h3>${event.name || event.band}</h3>
                 <p>${formattedDate}</p>
-                <p>${event.venue}</p>
-                <p>${event.street}, 
-                  ${event.state} ${event.zip} ${event.country}</p>
+                <p>${event.venue}<br>
+                ${event.street}<br>
+                  ${event.city}, ${event.state} ${event.zip}<br>
+                  ${event.country}</p>
                 <a href="${event.facebooK_LINK}" target="_blank">Facebook Event Link</a>
                 <a href="${event.tickeT_LINK}" target="_blank">Ticket Link</a>
+                <a href="${event.promo}" target="_blank">Flyer</a>
               </div>
               <div class="event-image">
                 <img src="${event.banD_IMAGE}" alt="Artist Image" class="event-img">
@@ -41,28 +43,36 @@
           eventsList.appendChild(eventItem);
 
           // Initialize map for each event
+          const mapAddress = event.address;
+
           const mapContainer = document.getElementById(`map-${event.id}`);
-          const mapOptions = {
-            zoom: 15,
-            center: new google.maps.LatLng(event.venue.latitude, event.venue.longitude),
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-          };
-          const map = new google.maps.Map(mapContainer, mapOptions);
 
-          // Place marker with click event
-          const marker = new google.maps.Marker({
-            position: new google.maps.LatLng(event.venue.latitude, event.venue.longitude),
-            map: map,
-            title: event.venue.name
-          });
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ 'address': mapAddress }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+              var mapOptions = {
+                zoom: 16,
+                center: results[0].geometry.location,
+                disableDefaultUI: true
+              };
+              var map = new google.maps.Map(document.getElementById(`map-${event.id}`), mapOptions);
+              var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+              });
+              // Add click listener to marker
+              marker.addListener('click', function () {
+                const confirmNavigation = confirm('Would you like to navigate to this event location?');
+                if (confirmNavigation) {
+                  window.open(event.googlE_MAPS_LINK, '_blank');
+                }
+              });
 
-          // Add click listener to marker
-          marker.addListener('click', function() {
-            const confirmNavigation = confirm('Would you like to navigate to this event location?');
-            if (confirmNavigation) {
-              window.open(`${event.google_maps_link}`, '_blank');
+            } else {
+              Console.error("Geocode was not successful for the following reason: " + status);
             }
           });
+
         });
       })
       .catch(error => console.error('Error:', error));
@@ -72,106 +82,114 @@
 
 
 <style>
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    
-      #events-list {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-      }
-    
-      .event-item {
-        background-color: black;
-        color: white;
-        border: 1px solid white;
-        border-radius: 5px;
-        box-sizing: border-box;
-        width: 80%;
-        padding: 1rem;
-        margin: 0.5rem;
-        display: flex;
-        flex-direction: column;
-        animation: fadeIn 0.5s ease-out;
-        transition: transform 0.3s ease;
-      }
-    
-      .event-container {
-        display: flex;
-        flex-direction: row;
-      }
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
 
-      .event-info {
-        flex: 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-    
-      .event-item h3 {
-        color: white;
-        margin: 10px;
-        font-size: 1.2em;
-      }
-    
-      .event-item p {
-        margin: 10px;
-      }
-    
-      .event-item a {
-        margin: 10px;
-        display: block;
-        color: #1E90FF;
-        text-decoration: none;
-      }
-    
-      .event-item a:hover {
-        text-decoration: underline;
-        color: #ADD8E6;
-      }
-    
-      .event-item:hover {
-        transform: scale(1.05);
-      }
-    
-      .event-image {
-        flex: 1;
-        margin-right: 10px;
-        transition: transform 0.3s ease;
-      }
-      .event-image:hover {
-        transform: scale(1.1);
-      }
-    
-      .event-img {
-        width: 100%;
-        border-radius: 5px;
-      }
+    to {
+      opacity: 1;
+    }
+  }
 
-      .event-map {
-        width: 100%;
-        height: 200px;
-        margin-top: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-      }
-    
-      @media (max-width: 500px) {
-        .event-item {
-          width: 95%;
-        }
-        .event-container {
-          flex-direction: column-reverse;
-          font-size: 1.2em;
-        }
-        .event-image {
-          align-self: center;
-          width: 50%;
-        }
-      }
+  #events-list {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .event-item {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 80%;
+    padding: 1rem;
+    margin: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.5s ease-out;
+    transition: transform 0.3s ease;
+  }
+
+  .event-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .event-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .event-item h3 {
+    color: white;
+    margin: 10px;
+    font-size: 1.2em;
+  }
+
+  .event-item p {
+    margin: 10px;
+  }
+
+  .event-item a {
+    margin: 10px;
+    display: block;
+    color: #1E90FF;
+    text-decoration: none;
+  }
+
+  .event-item a:hover {
+    text-decoration: underline;
+    color: #ADD8E6;
+  }
+
+  .event-item:hover {
+    transform: scale(1.05);   
+  }
+
+  .event-image {
+    flex: 1;
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+  }
+
+  .event-image:hover {
+    transform: scale(1);
+  }
+
+  .event-img {
+    width: 100%;
+    border-radius: 5px;
+  }
+
+  .event-map {
+    width: 100%;
+    height: 200px;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 500px) {
+    .event-item {
+      width: 95%;
+    }
+
+    .event-container {
+      flex-direction: column-reverse;
+      font-size: 1.2em;
+    }
+
+    .event-image {
+      align-self: center;
+      width: 50%;
+    }
+  }
 </style>
