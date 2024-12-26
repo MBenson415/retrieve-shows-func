@@ -17,7 +17,7 @@
           //"Wednesday, December 25 2024"
           const formattedDate = dateTime.toLocaleDateString("en-US", options);
 
-          const imageUrl = event.artist && event.artist.image_url ? event.artist.image_url : 'https://source.unsplash.com/featured/?rockband';
+          const googleMapsLink = 'https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwipxcTVlMSKAxULOTQIHaJ5IQ8Q8gF6BAggEAI&url=%2Fmaps%2Fplace%2F1213%2BGreen%2BForest%2BDr%2C%2BAustin%2B%2C%2BTX'
 
           eventItem.innerHTML = `
             <div class="event-container">
@@ -25,13 +25,13 @@
                 <h3>${event.name || event.band}</h3>
                 <p>${formattedDate}</p>
                 <p>${event.venue}</p>
-                <p>${event.street1}, 
+                <p>${event.streeT1}, 
                   ${event.state} ${event.zip} ${event.country}</p>
                 <a href="${event.facebooK_LINK}" target="_blank">Facebook Event Link</a>
-                <a href="${event.tickeT_LINK}" target="_blank">Ticket</a>
+                <a href="${event.tickeT_LINK}" target="_blank">Ticket Link</a>
               </div>
               <div class="event-image">
-                <img src="${imageUrl}" alt="Artist Image" class="event-img">
+                <img src="${event.banD_IMAGE}" alt="Artist Image" class="event-img">
               </div>
             </div>
             <div class="event-map" id="map-${event.id}">

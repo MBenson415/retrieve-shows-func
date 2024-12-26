@@ -1,5 +1,5 @@
 //Local V2
-GET http://localhost:7071/api/Shows
+//GET http://localhost:7071/api/Shows
 
 //Prod
 GET https://retrieve-shows-api.azurewebsites.net/api/Shows?code=XDNFwepNic7h2MsxHAmGOOMTNw64DmdtO8taNND7FXTyAzFuJNgr-Q%3D%3D
