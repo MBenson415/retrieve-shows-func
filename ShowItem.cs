@@ -16,5 +16,9 @@
         public string? TICKET_LINK { get; set; }
         public string? PROMO { get; set; }
         public string? BAND_IMAGE { get; set; }
+        public string? GOOGLE_MAPS_LINK { get; set; }
+        public string? ADDRESS { get; set; }
+
+
     
     }
